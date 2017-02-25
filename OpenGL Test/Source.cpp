@@ -2,6 +2,8 @@
 #include "SFML\System.hpp"
 #include "GL\glew.h"
 #include <SFML\OpenGL.hpp>
+#include <assert.h>
+#include <iostream>
 #include "InputManager.h"
 
 
@@ -11,6 +13,11 @@ int main() {
 	window.setVerticalSyncEnabled(true);
 	InputManager inputManager(window);
 	glEnable(GL_TEXTURE_2D);
+	GLenum status = glewInit();
+	if(status != GLEW_OK) {
+		std::cerr << "Glew failed to initialize" << std::endl;
+		return 1;
+	}
 
 
 	bool running = true;
