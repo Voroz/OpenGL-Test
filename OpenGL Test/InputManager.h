@@ -8,7 +8,7 @@
 class InputManager
 {
 public:
-	InputManager(sf::RenderWindow& window);
+	InputManager(sf::Window& window);
 	~InputManager();
 
 	void update(sf::Event event);
@@ -18,6 +18,6 @@ public:
 private:
 	std::unordered_map<sf::Keyboard::Key, bool> _keyMap;
 	std::unordered_map<sf::Mouse::Button, bool> _mouseMap;
-	sf::RenderWindow& _window;
+	sf::Window& _window;
 };
 

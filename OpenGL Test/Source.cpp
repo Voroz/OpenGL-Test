@@ -1,4 +1,3 @@
-#include "SFML\Graphics.hpp"
 #include "SFML\Window.hpp"
 #include "SFML\System.hpp"
 #include "GL\glew.h"
@@ -8,7 +7,7 @@
 
 
 int main() {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "OpenGL Test");
+	sf::Window window(sf::VideoMode(800, 600), "OpenGL Test");
 	window.setVerticalSyncEnabled(true);
 	InputManager inputManager(window);
 	glEnable(GL_TEXTURE_2D);
