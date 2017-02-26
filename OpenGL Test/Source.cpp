@@ -19,6 +19,15 @@ int main() {
 		return 1;
 	}
 
+	float vertices[] = {
+		0.0f, 0.5f, 0.0f, // Vertex 1 (X, Y, Z)
+		0.5f, -0.5f, 0.0f, // Vertex 2 (X, Y, Z)
+		-0.5f, -0.5f, 0.0f  // Vertex 3 (X, Y, Z)
+	};
+
+	sf::Shader shader;
+	shader.loadFromFile("basicShader.vs", "basicShader.fs");
+	sf::Shader::bind(&shader);
 
 	bool running = true;
 	while (running)
@@ -51,7 +60,7 @@ int main() {
 		// clear the buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// draw...
+		
 
 		// end the current frame (internally swaps the front and back buffers)
 		window.display();
