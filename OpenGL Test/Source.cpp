@@ -5,8 +5,10 @@
 #include <assert.h>
 #include <iostream>
 #include "InputManager.h"
+#include "Mesh.h"
+#include <glm\glm.hpp>
 
-
+typedef glm::vec3 Vertex;
 
 int main() {
 	sf::Window window(sf::VideoMode(800, 600), "OpenGL Test");
@@ -17,17 +19,21 @@ int main() {
 	if(status != GLEW_OK) {
 		std::cerr << "Glew failed to initialize" << std::endl;
 		return 1;
-	}
-
-	float vertices[] = {
-		0.0f, 0.5f, 0.0f, // Vertex 1 (X, Y, Z)
-		0.5f, -0.5f, 0.0f, // Vertex 2 (X, Y, Z)
-		-0.5f, -0.5f, 0.0f  // Vertex 3 (X, Y, Z)
-	};
+	}	
 
 	sf::Shader shader;
 	shader.loadFromFile("basicShader.vs", "basicShader.fs");
 	sf::Shader::bind(&shader);
+	window.setActive();
+
+
+	Vertex vertices[] = {
+		Vertex(0.0f, 0.5f, 0.0f),
+		Vertex(0.5f, -0.5f, 0.0f),
+		Vertex(-0.5f, -0.5f, 0.0f)
+	};
+	
+	Mesh mesh(vertices, 3);
 
 	bool running = true;
 	while (running)
@@ -60,7 +66,7 @@ int main() {
 		// clear the buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		
+		mesh.render();
 
 		// end the current frame (internally swaps the front and back buffers)
 		window.display();
