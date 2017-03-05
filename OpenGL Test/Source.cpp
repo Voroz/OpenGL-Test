@@ -15,15 +15,17 @@ int main() {
 	window.setVerticalSyncEnabled(true);
 	InputManager inputManager(window);
 	glEnable(GL_TEXTURE_2D);
-	GLenum status = glewInit();
-	if(status != GLEW_OK) {
+	glewExperimental = GL_TRUE;
+
+	if(glewInit() != GLEW_OK) {
 		std::cerr << "Glew failed to initialize" << std::endl;
 		return 1;
-	}	
+	}
+
+	glViewport(0, 0, window.getSize().x, window.getSize().y);
 
 	sf::Shader shader;
-	shader.loadFromFile("basicShader.vs", "basicShader.fs");
-	sf::Shader::bind(&shader);
+	shader.loadFromFile("basicShader.vs", "basicShader.fs");	
 	window.setActive();
 
 
@@ -66,6 +68,7 @@ int main() {
 		// clear the buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		sf::Shader::bind(&shader);
 		mesh.render();
 
 		// end the current frame (internally swaps the front and back buffers)
