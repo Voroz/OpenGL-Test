@@ -2,9 +2,7 @@
 
 
 
-InputManager::InputManager(sf::Window& window) :
-	_window(window)
-{
+InputManager::InputManager() {
 
 }
 

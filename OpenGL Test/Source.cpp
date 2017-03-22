@@ -13,7 +13,7 @@ typedef glm::vec3 Vertex;
 int main() {
 	sf::Window window(sf::VideoMode(800, 600), "OpenGL Test");
 	window.setVerticalSyncEnabled(true);
-	InputManager inputManager(window);
+	InputManager inputManager;
 	glEnable(GL_TEXTURE_2D);
 	glewExperimental = GL_TRUE;
 
