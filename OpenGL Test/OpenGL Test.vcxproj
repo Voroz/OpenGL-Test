@@ -126,6 +126,10 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Mesh.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="basicShader.fs" />
+    <None Include="basicShader.vs" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

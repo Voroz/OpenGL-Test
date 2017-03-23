@@ -25,17 +25,24 @@ int main() {
 	glViewport(0, 0, window.getSize().x, window.getSize().y);
 
 	sf::Shader shader;
-	shader.loadFromFile("basicShader.vs", "basicShader.fs");	
+	if (!shader.loadFromFile("basicShader.vs", "basicShader.fs")) {
+		std::cerr << "Shader failed to load" << std::endl;
+	}
+
 	window.setActive();
 
-
-	Vertex vertices[] = {
-		Vertex(0.0f, 0.5f, 0.0f),
-		Vertex(0.5f, -0.5f, 0.0f),
-		Vertex(-0.5f, -0.5f, 0.0f)
+	glm::vec3 vertices[] = {
+		glm::vec3(0.5f,  0.5f, 0.0f),  // Top Right
+		glm::vec3(0.5f, -0.5f, 0.0f),  // Bottom Right
+		glm::vec3(-0.5f, -0.5f, 0.0f),  // Bottom Left
+		glm::vec3(-0.5f,  0.5f, 0.0f)   // Top Left 
 	};
-	
-	Mesh mesh(vertices, 3);
+	GLuint indices[] = {  // Note that we start from 0!
+		0, 1, 3,   // First Triangle
+		1, 2, 3    // Second Triangle
+	};
+
+	Mesh mesh(vertices, 4, indices, 6);
 
 	bool running = true;
 	while (running)

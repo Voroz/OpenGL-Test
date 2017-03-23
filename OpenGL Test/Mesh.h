@@ -3,24 +3,18 @@
 #include <GL/glew.h>
 #include <SFML\Window.hpp>
 
-typedef glm::vec3 Vertex;
-
 class Mesh {
 
 public:
-	Mesh(Vertex* vertices, unsigned int numVertices);
+	Mesh(glm::vec3* vertices, GLuint numVertices, GLuint* indices = nullptr, GLuint numIndices = 0);
 	virtual ~Mesh();
 	void render();
 
 private:
 
-	enum {
-		POSITION_VB,
-
-		NUM_BUFFERS
-	};
-
-	GLuint _vertexArrayObject;
-	GLuint _vertexArrayBuffers[NUM_BUFFERS];
-	unsigned int _drawCount;
+	GLuint _VAO;
+	GLuint _VBO;
+	GLuint _EBO;
+	GLuint _numVertices;
+	GLuint _numIndices;
 };
