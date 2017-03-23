@@ -24,7 +24,7 @@ Mesh::Mesh(glm::vec3* vertices, GLuint numVertices, GLuint* indices, GLuint numI
 	glBindVertexArray(0);
 }
 
-Mesh::~Mesh(){
+Mesh::~Mesh() {
 	glDeleteVertexArrays(1, &_VAO);
 	glDeleteBuffers(1, &_VBO);
 	glDeleteBuffers(1, &_EBO);

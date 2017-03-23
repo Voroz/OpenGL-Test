@@ -37,7 +37,7 @@ int main() {
 		glm::vec3(-0.5f, -0.5f, 0.0f),  // Bottom Left
 		glm::vec3(-0.5f,  0.5f, 0.0f)   // Top Left 
 	};
-	GLuint indices[] = {  // Note that we start from 0!
+	GLuint indices[] = {
 		0, 1, 3,   // First Triangle
 		1, 2, 3    // Second Triangle
 	};
