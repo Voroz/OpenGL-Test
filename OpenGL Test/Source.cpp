@@ -35,17 +35,19 @@ int main() {
 
 	GLfloat vertices[] = {
 		// Positions         // Colors
+		0.5f,  0.5f, 0.0f,    // Top Right
 		0.5f, -0.5f, 0.0f,   // Bottom Right
 		-0.5f, -0.5f, 0.0f,   // Bottom Left
-		0.0f,  0.5f, 0.0f    // Top 
+		-0.5f,  0.5f, 0.0f    // Top Left
+				
 	};
 
 	GLuint indices[] = {
-		0, 2, 5,   // First Triangle
-		2, 4, 6    // Second Triangle
+		0, 1, 2,   // First Triangle
+		0, 2, 3    // Second Triangle
 	};
 
-	Mesh mesh(shader, vertices, 3);
+	Mesh mesh(shader, vertices, 4, indices, 6);
 	mesh.setColor(0.8f, 0.5f, 0.2f, 1.0f);
 	mesh.setVertexColor(2, 1.0f, 0.0f, 0.0f);
 
