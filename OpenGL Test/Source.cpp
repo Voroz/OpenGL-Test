@@ -16,6 +16,8 @@ int main() {
 	InputManager inputManager;
 	glEnable(GL_TEXTURE_2D);
 	glewExperimental = GL_TRUE;
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	if(glewInit() != GLEW_OK) {
 		std::cerr << "Glew failed to initialize" << std::endl;
@@ -31,19 +33,21 @@ int main() {
 
 	window.setActive();
 
-	glm::vec3 vertices[] = {
-		glm::vec3(0.5f,  0.5f, 0.0f),  // Top Right
-		glm::vec3(0.5f, -0.5f, 0.0f),  // Bottom Right
-		glm::vec3(-0.5f, -0.5f, 0.0f),  // Bottom Left
-		glm::vec3(-0.5f,  0.5f, 0.0f)   // Top Left 
-	};
-	GLuint indices[] = {
-		0, 1, 3,   // First Triangle
-		1, 2, 3    // Second Triangle
+	GLfloat vertices[] = {
+		// Positions         // Colors
+		0.5f, -0.5f, 0.0f,   // Bottom Right
+		-0.5f, -0.5f, 0.0f,   // Bottom Left
+		0.0f,  0.5f, 0.0f    // Top 
 	};
 
-	Mesh mesh(shader, vertices, 4, indices, 6);
-	mesh.setColor(sf::Color(255, 130, 50, 255));
+	GLuint indices[] = {
+		0, 2, 5,   // First Triangle
+		2, 4, 6    // Second Triangle
+	};
+
+	Mesh mesh(shader, vertices, 3);
+	mesh.setColor(0.8f, 0.5f, 0.2f, 1.0f);
+	mesh.setVertexColor(2, 1.0f, 0.0f, 0.0f);
 
 	bool running = true;
 	while (running)
@@ -76,7 +80,7 @@ int main() {
 		// clear the buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Render
+		// render
 		mesh.render();
 
 		// end the current frame (internally swaps the front and back buffers)
