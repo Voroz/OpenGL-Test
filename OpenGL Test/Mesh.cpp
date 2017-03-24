@@ -44,6 +44,7 @@ void Mesh::render() {
 }
 
 void Mesh::setColor(sf::Color color) {
+	sf::Shader::bind(_shader);
 	_shader->setParameter("ourColor", color);
 }
 
