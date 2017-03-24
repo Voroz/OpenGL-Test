@@ -2,9 +2,10 @@
 
 
 
-Mesh::Mesh(glm::vec3* vertices, GLuint numVertices, GLuint* indices, GLuint numIndices) :
+Mesh::Mesh(sf::Shader& shader, glm::vec3* vertices, GLuint numVertices, GLuint* indices, GLuint numIndices) :
 	_numVertices(numVertices),
-	_numIndices(numIndices)
+	_numIndices(numIndices),
+	_shader(&shader)
 {
 	glGenBuffers(1, &_VBO);
 	glGenBuffers(1, &_EBO);
@@ -31,6 +32,7 @@ Mesh::~Mesh() {
 }
 
 void Mesh::render() {
+	sf::Shader::bind(_shader);
 	glBindVertexArray(_VAO);
 	if (_numIndices) {
 		glDrawElements(GL_TRIANGLES, _numIndices, GL_UNSIGNED_INT, 0);
@@ -39,4 +41,12 @@ void Mesh::render() {
 		glDrawArrays(GL_TRIANGLES, 0, _numVertices);
 	}
 	glBindVertexArray(0);
+}
+
+void Mesh::setColor(sf::Color color) {
+	_shader->setParameter("ourColor", color);
+}
+
+void Mesh::setShader(sf::Shader* shader) {
+	_shader = shader;
 }

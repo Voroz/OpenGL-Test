@@ -42,7 +42,8 @@ int main() {
 		1, 2, 3    // Second Triangle
 	};
 
-	Mesh mesh(vertices, 4, indices, 6);
+	Mesh mesh(shader, vertices, 4, indices, 6);
+	mesh.setColor(sf::Color(255, 130, 50, 255));
 
 	bool running = true;
 	while (running)
@@ -75,7 +76,7 @@ int main() {
 		// clear the buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		sf::Shader::bind(&shader);
+		// Render
 		mesh.render();
 
 		// end the current frame (internally swaps the front and back buffers)
