@@ -48,7 +48,8 @@ int main() {
 	};
 
 	Mesh mesh(shader, vertices, 4, indices, 6);
-	mesh.setColor(0.8f, 0.5f, 0.2f, 1.0f);
+	mesh.setColor(0.8f, 0.5f, 0.2f, 1.0f);	
+	mesh.setVertexColor(0, 0.0f, 1.0f, 0.0f);
 	mesh.setVertexColor(2, 1.0f, 0.0f, 0.0f);
 
 	bool running = true;
