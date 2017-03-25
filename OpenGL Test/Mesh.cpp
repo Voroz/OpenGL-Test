@@ -125,10 +125,9 @@ void Mesh::setTexture(const sf::Uint8* pixels, GLuint width, GLuint height, GLfl
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	for (GLint i = 0; i < _numVertices; i++) {
-		for (GLint j = 0; j < 2; j++) {
-			GLint current = i * 9 + j + 7;
-			_vertices[current] = vertices[i * 2 + j];
-		}		
+		GLint current = i * 9 + 7;
+		_vertices[i * 9 + 7] = vertices[i * 2 + 0];
+		_vertices[i * 9 + 8] = vertices[i * 2 + 1];
+		glBufferSubData(GL_ARRAY_BUFFER, (i * 9 + 7) * sizeof(GLfloat), sizeof(GLfloat) * 2, &vertices[i * 2 + 0]);
 	}
-	glBufferData(GL_ARRAY_BUFFER, 9 * _numVertices * sizeof(_vertices[0]), _vertices, GL_STATIC_DRAW);
 }
