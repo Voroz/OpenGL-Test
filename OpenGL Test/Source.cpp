@@ -35,11 +35,9 @@ int main() {
 
 	GLfloat vertices[] = {
 		// Positions         // Colors
-		0.5f,  0.5f, 0.0f,    // Top Right
+		0.0f,  0.5f, 0.0f,    // Top
 		0.5f, -0.5f, 0.0f,   // Bottom Right
-		-0.5f, -0.5f, 0.0f,   // Bottom Left
-		-0.5f,  0.5f, 0.0f    // Top Left
-				
+		-0.5f, -0.5f, 0.0f,   // Bottom Left				
 	};
 
 	GLuint indices[] = {
@@ -52,7 +50,7 @@ int main() {
 		std::cerr << "Error loading image" << std::endl;
 	}
 
-	// Texture
+	// Texture Options
 	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
@@ -62,19 +60,16 @@ int main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getSize().x, image.getSize().y, 0, GL_RGB, GL_UNSIGNED_BYTE, image.getPixelsPtr());
-	glGenerateMipmap(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-
-	Mesh mesh(shader, vertices, 4, indices, 6);	
+	Mesh mesh(shader, vertices, 3);	
 	mesh.setVertexColor(1, 0.0f, 0.0f, 1.0f);
-	mesh.setVertexColor(3, 1.0f, 0.0f, 0.0f);
+	//mesh.setVertexColor(3, 1.0f, 0.0f, 0.0f);
+
+	GLfloat texCoords[] = {
+		0.5f, 1.0f,
+		1.0f, 0.0f,
+		0.0f, 0.0f
+	};
+	mesh.setTexture(image.getPixelsPtr(), image.getSize().x, image.getSize().y, texCoords);
 
 	sf::Clock clock;
 	sf::Time timer;	

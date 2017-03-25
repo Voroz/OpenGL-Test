@@ -31,6 +31,7 @@ Mesh::Mesh(sf::Shader& shader, GLfloat* vertices, GLuint numVertices, GLuint* in
 	glGenBuffers(1, &_VBO);
 	glGenBuffers(1, &_EBO);
 	glGenVertexArrays(1, &_VAO);
+	glGenTextures(1, &_Texture);
 
 	glBindVertexArray(_VAO);
 
@@ -41,11 +42,15 @@ Mesh::Mesh(sf::Shader& shader, GLfloat* vertices, GLuint numVertices, GLuint* in
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _numIndices * sizeof(indices[0]), indices, GL_STATIC_DRAW);
 		
 		// Specify where position is located in the data
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)0);
 		// Specify where colors are located in the data
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		// Specify where texture points are
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(7 * sizeof(GLfloat)));
+
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
 
 	glBindVertexArray(0);
 }
@@ -59,6 +64,7 @@ Mesh::~Mesh() {
 
 void Mesh::render() {
 	sf::Shader::bind(_shader);
+	glBindTexture(GL_TEXTURE_2D, _Texture);
 	glBindVertexArray(_VAO);	
 	if (_numIndices) {
 		glDrawElements(GL_TRIANGLES, _numIndices, GL_UNSIGNED_INT, 0);
@@ -67,6 +73,7 @@ void Mesh::render() {
 		glDrawArrays(GL_TRIANGLES, 0, _numVertices);
 	}
 	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 GLuint Mesh::verticeCount() {
@@ -108,4 +115,20 @@ void Mesh::setVertexColor(GLint index, GLfloat r, GLfloat g, GLfloat b, GLfloat 
 
 void Mesh::setShader(sf::Shader* shader) {
 	_shader = shader;
+}
+
+void Mesh::setTexture(const sf::Uint8* pixels, GLuint width, GLuint height, GLfloat* vertices) {
+	// Texture	
+	glBindTexture(GL_TEXTURE_2D, _Texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	for (GLint i = 0; i < _numVertices; i++) {
+		for (GLint j = 0; j < 2; j++) {
+			GLint current = i * 9 + j + 7;
+			_vertices[current] = vertices[i * 2 + j];
+		}		
+	}
+	glBufferData(GL_ARRAY_BUFFER, 9 * _numVertices * sizeof(_vertices[0]), _vertices, GL_STATIC_DRAW);
 }

@@ -14,12 +14,14 @@ public:
 	void setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1);
 	void Mesh::setVertexColor(GLint index, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1);
 	void setShader(sf::Shader* shader);
+	void setTexture(const sf::Uint8* pixels, GLuint width, GLuint height, GLfloat* vertices);
 
 private:
 
 	GLuint _VAO;
 	GLuint _VBO;
 	GLuint _EBO;
+	GLuint _Texture;
 	GLuint _numVertices;
 	GLuint _numIndices;
 	GLfloat* _vertices;
