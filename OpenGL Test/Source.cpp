@@ -47,14 +47,43 @@ int main() {
 		0, 2, 3    // Second Triangle
 	};
 
-	Mesh mesh(shader, vertices, 4, indices, 6);
-	mesh.setVertexColor(0, 0.0f, 1.0f, 0.0f);
+	sf::Image image;
+	if (!image.loadFromFile("container.jpg")) {
+		std::cerr << "Error loading image" << std::endl;
+	}
+
+	// Texture
+	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getSize().x, image.getSize().y, 0, GL_RGB, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+	Mesh mesh(shader, vertices, 4, indices, 6);	
 	mesh.setVertexColor(1, 0.0f, 0.0f, 1.0f);
 	mesh.setVertexColor(3, 1.0f, 0.0f, 0.0f);
+
+	sf::Clock clock;
+	sf::Time timer;	
 
 	bool running = true;
 	while (running)
 	{
+		timer += clock.getElapsedTime();
+		clock.restart();
 		sf::Event event;
 
 		while (window.pollEvent(event))
@@ -80,6 +109,9 @@ int main() {
 			}
 		}
 
+		GLfloat greenValue = sin(timer.asSeconds()) / 2 + 0.5;
+		mesh.setVertexColor(0, 0.0f, greenValue, 0.0f);
+
 		// clear the buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -89,7 +121,6 @@ int main() {
 		// end the current frame (internally swaps the front and back buffers)
 		window.display();
 	}
-
 
 
 	return 0;

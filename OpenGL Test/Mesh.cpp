@@ -8,16 +8,22 @@ Mesh::Mesh(sf::Shader& shader, GLfloat* vertices, GLuint numVertices, GLuint* in
 	_shader(&shader)
 {
 
-	// Create new vertice array with color of each vertice included. Set to white as default.
-	_vertices = new GLfloat[_numVertices * 7];
+	// Create new vertice array with color and texture space for each vertice included. Set to white as default.
+	_vertices = new GLfloat[_numVertices * 9];
 	for (GLint i = 0; i < _numVertices; i++) {
-		for (GLint j = 0; j < 7; j++) {
-			GLint current = i * 7 + j;
+		for (GLint j = 0; j < 9; j++) {
+			GLint current = i * 9 + j;
+			// Position
 			if (j < 3) {
 				_vertices[current] = vertices[i * 3 + j];
 			}
-			else {
+			// Color
+			else if (j < 7) {
 				_vertices[current] = 1.0f;
+			}
+			// Texture
+			else {
+				_vertices[current] = 0.0f;
 			}
 		}
 	}
@@ -29,15 +35,15 @@ Mesh::Mesh(sf::Shader& shader, GLfloat* vertices, GLuint numVertices, GLuint* in
 	glBindVertexArray(_VAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-		glBufferData(GL_ARRAY_BUFFER, 7 * _numVertices * sizeof(_vertices[0]), _vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 9 * _numVertices * sizeof(_vertices[0]), _vertices, GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _numIndices * sizeof(indices[0]), indices, GL_STATIC_DRAW);
 		
 		// Specify where position is located in the data
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (void*)0);
 		// Specify where colors are located in the data
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 
@@ -75,7 +81,7 @@ void Mesh::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
 		r, g, b, a
 	};
 
-	for (GLint i = 0; i < _numVertices * 7; i+=7) {
+	for (GLint i = 0; i < _numVertices * 9; i+=9) {
 		_vertices[i + 3] = r;
 		_vertices[i + 4] = g;
 		_vertices[i + 5] = b;
@@ -93,11 +99,11 @@ void Mesh::setVertexColor(GLint index, GLfloat r, GLfloat g, GLfloat b, GLfloat 
 		r, g, b, a
 	};
 
-	_vertices[index * 7 + 3] = r;
-	_vertices[index * 7 + 4] = g;
-	_vertices[index * 7 + 5] = b;
-	_vertices[index * 7 + 6] = a;
-	glBufferSubData(GL_ARRAY_BUFFER, (index * 7 + 3) * sizeof(GLfloat), sizeof(GLfloat) * 4, colorData);
+	_vertices[index * 9 + 3] = r;
+	_vertices[index * 9 + 4] = g;
+	_vertices[index * 9 + 5] = b;
+	_vertices[index * 9 + 6] = a;
+	glBufferSubData(GL_ARRAY_BUFFER, (index * 9 + 3) * sizeof(GLfloat), sizeof(GLfloat) * 4, colorData);
 }
 
 void Mesh::setShader(sf::Shader* shader) {
