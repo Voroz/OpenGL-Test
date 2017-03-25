@@ -47,7 +47,7 @@ int main() {
 	};
 
 	sf::Image image;
-	if (!image.loadFromFile("main_900.jpg")) {
+	if (!image.loadFromFile("smilingcontainer.png")) {
 		std::cerr << "Error loading image" << std::endl;
 	}
 	image.flipVertically();
@@ -63,9 +63,10 @@ int main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	Mesh mesh(shader, vertices, 4, indices, 6);	
-	mesh.setVertexColor(1, 0.0f, 0.0f, 1.0f);
-	mesh.setVertexColor(3, 1.0f, 0.0f, 0.0f);
+	Mesh mesh(shader, vertices, 4, indices, 6);
+	/*mesh.setVertexColor(0, 0.0f, 1.0f, 0.0f);
+	mesh.setVertexColor(1, 0.0f, 0.0f, 1.0f);	
+	mesh.setVertexColor(3, 1.0f, 0.0f, 0.0f);*/
 
 	GLfloat texCoords[] = {
 		1.0f, 1.0f,
@@ -107,12 +108,6 @@ int main() {
 				} break;
 			}
 		}
-
-		GLfloat value1 = cos(timer.asSeconds()) / 2 + 0.5;
-		GLfloat value2 = sin(timer.asSeconds()) / 2 + 0.5;
-		mesh.setVertexColor(3, value1, value2, 0.0f);
-		mesh.setVertexColor(0, value2, value2, 0.0f);
-		mesh.setVertexColor(1, value2, 0.0f, value1);
 
 		// clear the buffers
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
