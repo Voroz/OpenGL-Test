@@ -11,7 +11,7 @@
 typedef glm::vec3 Vertex;
 
 int main() {
-	sf::Window window(sf::VideoMode(800, 600), "OpenGL Test");
+	sf::Window window(sf::VideoMode(700, 700), "OpenGL Test");
 	window.setVerticalSyncEnabled(true);
 	InputManager inputManager;
 	glEnable(GL_TEXTURE_2D);
@@ -35,9 +35,10 @@ int main() {
 
 	GLfloat vertices[] = {
 		// Positions         // Colors
-		0.0f,  0.5f, 0.0f,    // Top
+		0.5f,  0.5f, 0.0f,    // Top Right
 		0.5f, -0.5f, 0.0f,   // Bottom Right
-		-0.5f, -0.5f, 0.0f,   // Bottom Left				
+		-0.5f, -0.5f, 0.0f,   // Bottom Left		
+		-0.5f,  0.5f, 0.0f,    // Top Left
 	};
 
 	GLuint indices[] = {
@@ -46,9 +47,11 @@ int main() {
 	};
 
 	sf::Image image;
-	if (!image.loadFromFile("container.jpg")) {
+	if (!image.loadFromFile("main_900.jpg")) {
 		std::cerr << "Error loading image" << std::endl;
 	}
+	image.flipVertically();
+	
 
 	// Texture Options
 	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
@@ -60,14 +63,15 @@ int main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	Mesh mesh(shader, vertices, 3);	
+	Mesh mesh(shader, vertices, 4, indices, 6);	
 	mesh.setVertexColor(1, 0.0f, 0.0f, 1.0f);
-	//mesh.setVertexColor(3, 1.0f, 0.0f, 0.0f);
+	mesh.setVertexColor(3, 1.0f, 0.0f, 0.0f);
 
 	GLfloat texCoords[] = {
-		0.5f, 1.0f,
+		1.0f, 1.0f,
 		1.0f, 0.0f,
-		0.0f, 0.0f
+		0.0f, 0.0f,
+		0.0f, 1.0f
 	};
 	mesh.setTexture(image.getPixelsPtr(), image.getSize().x, image.getSize().y, texCoords);
 
@@ -104,10 +108,14 @@ int main() {
 			}
 		}
 
-		GLfloat greenValue = sin(timer.asSeconds()) / 2 + 0.5;
-		mesh.setVertexColor(0, 0.0f, greenValue, 0.0f);
+		GLfloat value1 = cos(timer.asSeconds()) / 2 + 0.5;
+		GLfloat value2 = sin(timer.asSeconds()) / 2 + 0.5;
+		mesh.setVertexColor(3, value1, value2, 0.0f);
+		mesh.setVertexColor(0, value2, value2, 0.0f);
+		mesh.setVertexColor(1, value2, 0.0f, value1);
 
 		// clear the buffers
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// render

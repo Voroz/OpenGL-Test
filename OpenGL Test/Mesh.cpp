@@ -120,7 +120,7 @@ void Mesh::setShader(sf::Shader* shader) {
 void Mesh::setTexture(const sf::Uint8* pixels, GLuint width, GLuint height, GLfloat* vertices) {
 	// Texture	
 	glBindTexture(GL_TEXTURE_2D, _Texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
