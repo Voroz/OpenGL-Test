@@ -7,6 +7,7 @@
 #include "InputManager.h"
 #include "Mesh.h"
 #include "MyShader.h"
+#include "Camera.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -178,18 +179,15 @@ int main() {
 	GLint projectionLoc = glGetUniformLocation(shader.Program, "projection");
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));	
 
-	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	GLfloat cameraSpeed = 0.05f;
-
-	GLfloat yaw = 0;
-	GLfloat pitch = 0;
+	Camera camera;
 
 	GLfloat lastX = window.getSize().x / 2;
 	GLfloat lastY = window.getSize().y / 2;
 	bool firstMouse = true;
 
+	window.setMouseCursorGrabbed(true);
+	window.setMouseCursorVisible(false);
+	sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
 
 	sf::Clock clock;
 	sf::Time timer;	
@@ -223,56 +221,45 @@ int main() {
 				} break;
 
 				case sf::Event::MouseMoved: {
-					if (firstMouse) // this bool variable is initially set to true
+					if (firstMouse) // this bool variable is initially set to true (not working right now)
 					{
-						lastX = sf::Mouse::getPosition().x;
-						lastY = sf::Mouse::getPosition().y;
+						lastX = sf::Mouse::getPosition(window).x;
+						lastY = sf::Mouse::getPosition(window).y;
 						firstMouse = false;
 					}
 
-					GLfloat xoffset = sf::Mouse::getPosition().x - lastX;
-					GLfloat yoffset = lastY - sf::Mouse::getPosition().y; // Reversed since y-coordinates range from bottom to top
-					lastX = sf::Mouse::getPosition().x;
-					lastY = sf::Mouse::getPosition().y;
+					if (sf::Mouse::getPosition(window).x == window.getSize().x / 2 && sf::Mouse::getPosition(window).y == window.getSize().y / 2) {
+						break;
+					}
+					GLfloat xoffset = sf::Mouse::getPosition(window).x - lastX;
+					GLfloat yoffset = lastY - sf::Mouse::getPosition(window).y; // Reversed since y-coordinates range from bottom to top				
 
-					GLfloat sensitivity = 0.05f;
-					xoffset *= sensitivity;
-					yoffset *= sensitivity;
-
-					yaw += xoffset;
-					pitch += yoffset;
-
-					if (pitch > 89.0f)
-						pitch = 89.0f;
-					if (pitch < -89.0f)
-						pitch = -89.0f;
-
-					cameraFront.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
-					cameraFront.y = sin(glm::radians(pitch));
-					cameraFront.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
-					cameraFront = glm::normalize(cameraFront);
+					camera.ProcessMouseMovement(xoffset, yoffset);
+					
+					sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
+					lastX = sf::Mouse::getPosition(window).x;
+					lastY = sf::Mouse::getPosition(window).y;
 				} break;
 			}
 		}
 
-
 		if (inputManager.isKeyDown(sf::Keyboard::W)) {
-			cameraPos += cameraSpeed * cameraFront;
+			camera.ProcessKeyboard(Camera_Movement::FORWARD, 0.02);
 		}
 		if (inputManager.isKeyDown(sf::Keyboard::S)) {
-			cameraPos -= cameraSpeed * cameraFront;
+			camera.ProcessKeyboard(Camera_Movement::BACKWARD, 0.02);
 		}
 		if (inputManager.isKeyDown(sf::Keyboard::A)) {
-			cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+			camera.ProcessKeyboard(Camera_Movement::LEFT, 0.02);
 		}
 		if (inputManager.isKeyDown(sf::Keyboard::D)) {
-			cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+			camera.ProcessKeyboard(Camera_Movement::RIGHT, 0.02);
 		}
 
 
 		
 		glm::mat4 view;
-		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		view = camera.GetViewMatrix();
 		GLint viewLoc = glGetUniformLocation(shader.Program, "view");
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
