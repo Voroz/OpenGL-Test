@@ -87,9 +87,9 @@ void MyShader::bind() {
 	glUseProgram(this->Program);
 }
 
-void MyShader::setUniform(std::string name, glm::mat4& transform) {
+void MyShader::setUniform(const GLchar* name, glm::mat4& transform) {
 	bind();
-	GLuint transformLoc = glGetUniformLocation(Program, "transform");
+	GLuint transformLoc = glGetUniformLocation(Program, name);
 	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 }
 

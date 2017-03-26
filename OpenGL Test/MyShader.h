@@ -18,7 +18,7 @@ public:
 
 	void bind();
 	// Add overloads of these when needed
-	void setUniform(std::string name, glm::mat4& transform);
+	void setUniform(const GLchar*, glm::mat4& transform);
 
 	// The program ID
 	GLuint Program;

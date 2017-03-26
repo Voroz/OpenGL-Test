@@ -166,7 +166,7 @@ int main() {
 
 
 	glm::mat4 model;
-	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(75.0f), (float)window.getSize().x / window.getSize().y, 0.1f, 100.0f);
@@ -175,9 +175,9 @@ int main() {
 	GLint modelLoc = glGetUniformLocation(shader.Program, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-
 	GLint projectionLoc = glGetUniformLocation(shader.Program, "projection");
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));	
+	
 
 	Camera camera;
 
@@ -262,6 +262,8 @@ int main() {
 		view = camera.GetViewMatrix();
 		GLint viewLoc = glGetUniformLocation(shader.Program, "view");
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+		mesh.setRotation(Rotation(sin(glm::radians(timer.asSeconds())) * 20, 1, 0, 0));
 
 		// clear the buffers
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

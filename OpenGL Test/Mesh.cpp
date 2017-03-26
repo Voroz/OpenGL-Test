@@ -119,7 +119,7 @@ void Mesh::setRotation(Rotation rotation) {
 	_rotation = rotation;
 	glm::mat4 trans;
 	trans = glm::rotate(trans, _rotation.angle, glm::vec3(_rotation.x, _rotation.y, _rotation.z));
-	_shader->setUniform("transform", trans);
+	_shader->setUniform("model", trans);
 }
 
 void Mesh::setShader(MyShader* shader) {
