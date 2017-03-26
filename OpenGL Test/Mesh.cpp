@@ -2,10 +2,11 @@
 
 
 
-Mesh::Mesh(sf::Shader& shader, GLfloat* vertices, GLuint numVertices, GLuint* indices, GLuint numIndices) :
+Mesh::Mesh(MyShader& shader, GLfloat* vertices, GLuint numVertices, GLuint* indices, GLuint numIndices) :
 	_numVertices(numVertices),
 	_numIndices(numIndices),
-	_shader(&shader)
+	_shader(&shader),
+	_rotation(Rotation(0, 0, 0, 0))
 {
 
 	// Create new vertice array with color and texture space for each vertice included. Set to white as default.
@@ -63,7 +64,8 @@ Mesh::~Mesh() {
 }
 
 void Mesh::render() {
-	sf::Shader::bind(_shader);
+	_shader->bind();
+	setRotation(_rotation);
 	glBindTexture(GL_TEXTURE_2D, _Texture);
 	glBindVertexArray(_VAO);	
 	if (_numIndices) {
@@ -113,7 +115,14 @@ void Mesh::setVertexColor(GLint index, GLfloat r, GLfloat g, GLfloat b, GLfloat 
 	glBufferSubData(GL_ARRAY_BUFFER, (index * 9 + 3) * sizeof(GLfloat), sizeof(GLfloat) * 4, colorData);
 }
 
-void Mesh::setShader(sf::Shader* shader) {
+void Mesh::setRotation(Rotation rotation) {
+	_rotation = rotation;
+	glm::mat4 trans;
+	trans = glm::rotate(trans, _rotation.angle, glm::vec3(_rotation.x, _rotation.y, _rotation.z));
+	_shader->setUniform("transform", trans);
+}
+
+void Mesh::setShader(MyShader* shader) {
 	_shader = shader;
 }
 
@@ -130,4 +139,8 @@ void Mesh::setTexture(const sf::Uint8* pixels, GLuint width, GLuint height, GLfl
 		_vertices[i * 9 + 8] = vertices[i * 2 + 1];
 		glBufferSubData(GL_ARRAY_BUFFER, (i * 9 + 7) * sizeof(GLfloat), sizeof(GLfloat) * 2, &vertices[i * 2 + 0]);
 	}
+}
+
+Rotation Mesh::getRotation() {
+	return _rotation;
 }
