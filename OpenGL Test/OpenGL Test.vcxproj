@@ -95,7 +95,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\SFML VS2015\include;C:\glew-2.0.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\SFML VS2015\include;C:\glew-2.0.0\include;C:\glm\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

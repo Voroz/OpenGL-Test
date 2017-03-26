@@ -20,7 +20,8 @@ int main() {
 	settings.antialiasingLevel = 0;  // Request 0 levels of antialiasing
 
 	sf::Window window(sf::VideoMode(800, 600), "OpenGL Test", sf::Style::Default, settings);
-	window.setVerticalSyncEnabled(true);
+	window.setVerticalSyncEnabled(false);
+	window.setFramerateLimit(100);
 
 	InputManager inputManager;
 
@@ -166,10 +167,6 @@ int main() {
 	glm::mat4 model;
 	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-	glm::mat4 view;
-	// Note that we're translating the scene in the reverse direction of where we want to move
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));	
-
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(75.0f), (float)window.getSize().x / window.getSize().y, 0.1f, 100.0f);
 
@@ -177,11 +174,21 @@ int main() {
 	GLint modelLoc = glGetUniformLocation(shader.Program, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-	GLint viewLoc = glGetUniformLocation(shader.Program, "view");
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 	GLint projectionLoc = glGetUniformLocation(shader.Program, "projection");
-	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));	
+
+	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+	GLfloat cameraSpeed = 0.05f;
+
+	GLfloat yaw = 0;
+	GLfloat pitch = 0;
+
+	GLfloat lastX = window.getSize().x / 2;
+	GLfloat lastY = window.getSize().y / 2;
+	bool firstMouse = true;
 
 
 	sf::Clock clock;
@@ -214,8 +221,60 @@ int main() {
 
 					}
 				} break;
+
+				case sf::Event::MouseMoved: {
+					if (firstMouse) // this bool variable is initially set to true
+					{
+						lastX = sf::Mouse::getPosition().x;
+						lastY = sf::Mouse::getPosition().y;
+						firstMouse = false;
+					}
+
+					GLfloat xoffset = sf::Mouse::getPosition().x - lastX;
+					GLfloat yoffset = lastY - sf::Mouse::getPosition().y; // Reversed since y-coordinates range from bottom to top
+					lastX = sf::Mouse::getPosition().x;
+					lastY = sf::Mouse::getPosition().y;
+
+					GLfloat sensitivity = 0.05f;
+					xoffset *= sensitivity;
+					yoffset *= sensitivity;
+
+					yaw += xoffset;
+					pitch += yoffset;
+
+					if (pitch > 89.0f)
+						pitch = 89.0f;
+					if (pitch < -89.0f)
+						pitch = -89.0f;
+
+					cameraFront.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+					cameraFront.y = sin(glm::radians(pitch));
+					cameraFront.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+					cameraFront = glm::normalize(cameraFront);
+				} break;
 			}
 		}
+
+
+		if (inputManager.isKeyDown(sf::Keyboard::W)) {
+			cameraPos += cameraSpeed * cameraFront;
+		}
+		if (inputManager.isKeyDown(sf::Keyboard::S)) {
+			cameraPos -= cameraSpeed * cameraFront;
+		}
+		if (inputManager.isKeyDown(sf::Keyboard::A)) {
+			cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		}
+		if (inputManager.isKeyDown(sf::Keyboard::D)) {
+			cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		}
+
+
+		
+		glm::mat4 view;
+		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		GLint viewLoc = glGetUniformLocation(shader.Program, "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
 		// clear the buffers
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
