@@ -169,7 +169,7 @@ int main() {
 	model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(75.0f), (float)window.getSize().x / window.getSize().y, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(75.0f), (float)window.getSize().x / window.getSize().y, 0.01f, 100.0f);
 
 	shader.bind();
 	GLint modelLoc = glGetUniformLocation(shader.Program, "model");
